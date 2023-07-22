@@ -4,42 +4,59 @@
     <head>
         {% include "fragments/head.html" %}
         <title>Lucy Gestão Pessoal</title>
+        <script src="/static/js/home.js"></script>
     </head>
 
     <body>
         <div class="page">
-            <div class="header">
-                <div class="header-options">
-                    <div class="header-button"><span>HOME</span></div>
-                    <div class="header-button"><span>METAS</span></div>
-                    <div class="header-button"><span>REGISTROS</span></div>
-                </div>
-
-                <div class="header-user">
-                    <span class="material-symbols-outlined">account_circle</span>
-                    <span class="header-user-text">Bruno</span>
-                </div>
-            </div>
+            {% include "fragments/menu.html" %}
 
             <div class="content">
-                aqui é o conteúdo da página
+                <div class="container">
+
+                    <div class="wallet-title">
+                        <h3>Suas carteiras</h3>
+                        <div class="button" onclick="openModal()">
+                            <span class="material-symbols-outlined">library_add</span>
+                            <span class="label">Nova</span>
+                        </div>
+                    </div>
+
+                    <div id="wallet-area"></div>
+
+                </div>
             </div>
 
-            <div class="footer">
-                <div class="footer-left">
-                    <img src="/static/logo.png" />
-                    <div>
-                        <h3>Lucy Gestão Pessoal</h3>
-                        <h4>Democratizando e empoderando as pessoas na condução da sua própria estratégia</h4>
+            {% include "fragments/footer.html" %}
+
+            <div class="modal" tabindex="-1" role="dialog" id="new-wallet">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">Nova Carteira</h5>
+                            <span class="material-symbols-outlined" onclick="closeModal()">close</span>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="modal-form-row">
+                                <label>Nome da carteira</label>
+                                <input id="new-wallet-name">
+                            </div>
+
+                            <div class="modal-form-button">
+                                <span>Salvar</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <div class="footer-right">
-                    <h4>Desenvolvido por Bruno de Lima Santos</h4>
-                    <span>Todos os direitos reservados<br>Contato: bruno.19ls@gmail.com</span>
-                </div>
             </div>
+
         </div>
     </body>
+
+    <script>
+        loadData();
+    </script>
 
 </html>
