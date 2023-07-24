@@ -4,6 +4,7 @@
     <head>
         {% include "fragments/head.html" %}
         <title>Lucy Gestão Pessoal</title>
+        <script src="/static/js/budget.js"></script>
     </head>
 
     <body>
@@ -13,15 +14,75 @@
             <div class="content">
                 <div class="container">
 
-                    Página de acompanhamento de metas
+                    <div class="budget-title">
+                        <h3>Metas de Gasto</h3>
+
+                        <div class="budget-row">
+                            <div class="budget-select">
+                                <select id="budget-month" onchange="renderBudgets()"></select>
+                                <select id="budget-year" onchange="renderBudgets()"></select>
+                            </div>
+
+                            <div class="button" onclick="newBudget()">
+                                <span class="material-symbols-outlined">library_add</span>
+                                <span class="label">Nova Meta</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="budget-row budget-table-title">
+                        <div class="col-4">
+                            <h5>Item</h5>
+                        </div>
+                        <div class="col-3">
+                            <h5>Meta</h5>
+                        </div>
+                        <div class="col-3">
+                            <h5>Real</h5>
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
+
+                    <div id="budget-area"></div>
 
                 </div>
             </div>
 
             {% include "fragments/footer.html" %}
+
+            <div class="modal" tabindex="-1" role="dialog" id="form-budget">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modal-title"></h5>
+                            <span class="material-symbols-outlined" onclick="closeModal()">close</span>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="modal-form-row">
+                                <label>Escolha um item para atribuir meta</label>
+                                <select id="budget-items" onchange="newItem()"></select>
+                                <input id="new-item" class="hide">
+                            </div>
+                            <div class="modal-form-row">
+                                <label>Informe o valor para a meta</label>
+                                <input id="budget-value">
+                            </div>
+
+                            <div class="modal-form-button">
+                                <span>Salvar</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </body>
 
-    <script></script>
+    <script>
+        loadOptions();
+    </script>
 
 </html>

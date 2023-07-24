@@ -37,7 +37,7 @@ function loadData() {
     }
 
     // Estrutura o cartão para cada carteira
-    const currency = new Intl.NumberFormat("pt-br", {style: "currency", currency: "BRL"})
+    const currency = new Intl.NumberFormat("pt-br", {style: "currency", currency: "BRL"});
     demoResponse.data.forEach(item => {
         $("#wallet-area").append(`
             <div class="wallet-card">
