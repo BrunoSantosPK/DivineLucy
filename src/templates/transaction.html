@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <head>
+        {% include "fragments/head.html" %}
+        <title>Lucy Gestão Pessoal</title>
+        <script src="/static/js/transaction.js"></script>
+    </head>
+
+    <body>
+        <div class="page">
+            {% include "fragments/menu.html" %}
+
+            <div class="content">
+                <div class="container">
+
+                    <div class="transaction-title">
+                        <h3>Movimentações</h3>
+                        <div class="button" onclick="newTransaction()">
+                            <span class="material-symbols-outlined">library_add</span>
+                            <span class="label">Nova</span>
+                        </div>
+                    </div>
+
+                    <div id="transaction-area"></div>
+
+                </div>
+            </div>
+
+            {% include "fragments/footer.html" %}
+
+            <div class="modal" tabindex="-1" role="dialog" id="transaction-form">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modal-title"></h5>
+                            <span class="material-symbols-outlined" onclick="closeModal()">close</span>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <div class="modal-form-row">
+                                <label>Data de realização da movimentação</label>
+                                <input type="date" min="2023-01-01" id="transaction-date">
+                            </div>
+
+                            <div class="modal-form-row">
+                                <label>Descrição da transação</label>
+                                <input id="transactin-description">
+                            </div>
+
+                            <div class="modal-form-row">
+                                <label>Valor total da transação</label>
+                                <input id="transaction-value" type="number">
+                            </div>
+
+                            <div class="modal-form-row">
+                                <label>Conta onde a transação será executada</label>
+                                <select id="transaction-target-wallet"></select>
+                            </div>
+
+                            <div class="modal-form-row">
+                                <label>O valor será removido de outra conta?</label>
+                                <select id="is-transfer" onchange="showTransferWallet()">
+                                    <option value="0">Não</option>
+                                    <option value="1">Sim</option>
+                                </select>
+                                <select id="transaction-origin-wallet" class="hide"></select>
+                            </div>
+
+                            <div class="modal-form-row">
+                                <label>Indique um item de classificação da movimentação</label>
+                                <select id="transaction-tag"></select>
+                            </div>
+
+                            <div class="modal-subtitle">
+                                <h5>Detalhamento da movimentação</h5>
+                                <span class="material-symbols-outlined" onclick="addItemDetails()">add_circle</span>
+                            </div>
+
+                            <div id="transaction-details-area">
+                                <div class="modal-form-details">
+                                    <input value="Produto A">
+                                    <input type="number" value="">
+                                    <span class="material-symbols-outlined" onclick="deleteItemDetais('lambari')">delete</span>
+                                </div>
+                                <div class="modal-form-details">
+                                    <input value="Produto B">
+                                    <input type="number" value=>
+                                    <span class="material-symbols-outlined" onclick="deleteItemDetais('lambari')">delete</span>
+                                </div>
+                            </div>
+
+                            <div class="modal-form-button">
+                                <span>Salvar</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </body>
+
+    <script>
+        renderTransactions();
+        renderOptionsModal();
+    </script>
+
+</html>

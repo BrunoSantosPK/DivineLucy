@@ -23,6 +23,6 @@ def page_budget():
     return render_template("budget.html")
 
 
-@app.route("/action", methods=["GET"])
+@app.route("/transaction", methods=["GET"])
 def page_action():
-    return render_template("action.html")
+    return render_template("transaction.html")

@@ -40,6 +40,16 @@ body { font-family: 'Urbanist', sans-serif; }
 .content .budget-row h5 { font-size: 18px; }
 .content .budget-row .warning { color: #bd1919; }
 
+.content .transaction-title { display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 30px; align-items: center; }
+.content .transaction-title h3 { font-size: 35px; }
+.content .transaction-title .button { display: flex; flex-direction: row; align-items: center; cursor: pointer; transition: opacity 0.2x; }
+.content .transaction-title .button:hover { opacity: 0.6; }
+.content .transaction-title .button .label { font-size: 20px; margin-left: 5px; }
+.content .transaction-row { display: flex; flex-direction: row; align-items: center; justify-content: space-between; }
+.content .transaction-row p { font-size: 18px; }
+.content .transaction-row .buttons { display: flex; flex-direction: row; justify-content: flex-end; }
+.content .transaction-row .buttons span { cursor: pointer; margin-left: 7px; }
+
 .footer { background-color: #0e172f; color: #fff; min-height: 10vh; display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 10px 20px; }
 .footer .footer-left img { width: 50px; height: 50px; }
 .footer .footer-left { display: flex; flex-direction: row; }
@@ -56,7 +66,14 @@ body { font-family: 'Urbanist', sans-serif; }
 .modal-form-button { margin-top: 20px; display: flex; justify-content: center; align-items: center; width: 100%; cursor: pointer; background-color: #2b2b4d; border-radius: 5px; transition: opacity 0.2s; padding: 3px; }
 .modal-form-button:hover { opacity: 0.6; }
 .modal-form-button span { color: #dae7ef; font-size: 20px; }
-
+.modal-subtitle { display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 10px; }
+.modal-subtitle h5 { font-size: 19px; }
+.modal-subtitle span { cursor: pointer; transition: opacity 0.2s; }
+.modal-subtitle span:hover { opacity: 0.6; }
+.modal-form-details { display: flex; flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.modal-form-details input { padding: 2px 5px; border-radius: 5px; font-size: 16px; border: 1px solid #a9a9a9; color: #454e58; }
+.modal-form-details span { cursor: pointer; transition: opacity 0.2s; }
+.modal-form-details span:hover { opacity: 0.6; }
 
 
 /* Resposividade */
