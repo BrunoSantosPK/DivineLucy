@@ -19,7 +19,12 @@ def create_tables() -> None:
 def create_root_user() -> None:
     try:
         session = get_session()
-        root = User(name="Root", email="root@root.com.br", password=User.encrypt_password("lambari", "token"))
+        root = User(
+            id="49fe6c42-b940-4122-906b-e95c7316e349",
+            name="Root",
+            email="root@root.com.br",
+            password=User.encrypt_password("lambari", "token")
+        )
         session.add(root)
         session.commit()
         print(f"Usuário padrão criado com sucesso, id: {root.id}")
@@ -33,8 +38,8 @@ def create_default_items() -> None:
     try:
         session = get_session()
         session.add_all([
-            ClassificationItem(name="Supermercado"),
-            ClassificationItem(name="Lazer"),
+            ClassificationItem(name="Supermercado", id="fb0b8338-63ab-4ccf-8ebf-8e4b2798b08a"),
+            ClassificationItem(name="Lazer", id="404c3daa-5759-454c-81fc-39cc644b13d2"),
             ClassificationItem(name="Saúde"),
             ClassificationItem(name="Transporte"),
             ClassificationItem(name="Casa"),

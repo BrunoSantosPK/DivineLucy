@@ -1,6 +1,8 @@
 import os
 from dotenv import load_dotenv
-from flask import Flask, render_template
+from src.controllers.wallet import WalletController
+from src.controllers.budget import BudgetController
+from flask import Flask, render_template, Response, request
 
 
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,3 +28,27 @@ def page_budget():
 @app.route("/transaction", methods=["GET"])
 def page_action():
     return render_template("transaction.html")
+
+
+@app.route("/wallets", methods=["POST"])
+def create_wallet():
+    result = WalletController.new()
+    return Response(result.to_json(), result.get_status_code())
+
+
+@app.route("/wallets/<user_id>", methods=["GET"])
+def get_wallets(user_id: str):
+    result = WalletController.get_all()
+    return Response(result.to_json(), result.get_status_code())
+
+
+@app.route("/budget", methods=["POST", "PUT", "DELETE"])
+def manage_budget():
+    result = None
+    if request.method == "POST":
+        result = BudgetController.new()
+    elif request.method == "PUT":
+        result = BudgetController.edit()
+    elif request.method == "DELETE":
+        result = BudgetController.delete()
+    return Response(result.to_json(), result.get_status_code())
