@@ -1,5 +1,5 @@
 import calendar
-from typing import Tuple
+from typing import Tuple, List
 from datetime import date, datetime
 from src.models.budget import Budget
 from src.database.connect import get_session
@@ -81,5 +81,33 @@ class BudgetService:
             return message
 
     @staticmethod
-    def get_all():
-        pass
+    def get_all(user_id: str, year: int, month: int) -> Tuple[List[dict], str]:
+        session = get_session()
+        message, budgets = "", []
+
+        try:
+            # Calcula datas de início e fim
+            start_date = date(year, month, 1)
+            end_date = date(year, month, calendar.monthrange(year, month)[1])
+            result: List[Budget] = session.query(Budget).filter(
+                Budget.user_id == user_id,
+                Budget.start_date >= start_date,
+                Budget.end_date <= end_date
+            ).all()
+            budgets = [{
+                "id": str(r.id),
+                "user_id": str(r.user_id),
+                "item_id": str(r.item_id),
+                "start_date": r.start_date.isoformat(),
+                "end_date": r.end_date.isoformat(),
+                "value": r.value,
+                "create_at": r.create_at.isoformat(),
+                "modified_at": r.modified_at.isoformat()
+            } for r in result]
+
+        except BaseException as e:
+            message = str(e)
+
+        finally:
+            session.close()
+            return budgets, message

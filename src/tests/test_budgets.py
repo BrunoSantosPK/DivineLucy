@@ -41,6 +41,12 @@ def test_service_edit_budget():
     assert message == ""
 
 
+def test_service_get_budget():
+    budgets, message = BudgetService.get_all(track_test_data["user_id"], 2023, 8)
+    assert message == ""
+    assert len(budgets) == 1
+
+
 def test_service_delete_budget():
     result, message = BudgetService.delete(track_test_data["budget_id_service"])
     assert message == ""
@@ -76,6 +82,15 @@ def test_controller_edit_budget(client: FlaskClient):
     assert data["message"] == ""
     assert data["status_code"] == 200
     assert data["data"] == None
+
+
+def test_controller_get_budgets(client: FlaskClient):
+    res = client.get(f"/budget/{track_test_data['user_id']}?year={2023}&month={8}")
+    data = json.loads(res.get_data(as_text=True))
+
+    assert data["message"] == ""
+    assert data["status_code"] == 200
+    assert len(data["data"]) == 1
 
 
 def test_controller_delete_budget(client: FlaskClient):

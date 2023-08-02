@@ -53,8 +53,16 @@ class BudgetController:
 
         try:
             # Verifica o JWT enviado
-            body = json.loads(request.data)
+            user_id = request.view_args["user_id"]
+            month = int(request.args.get("month"))
+            year = int(request.args.get("year"))
 
+            data, message = BudgetService.get_all(user_id, year, month)
+            if message != "":
+                raise Exception(message)
+            
+            integration.set_data(data)
+            
         except BaseException as e:
             integration.set_message(str(e))
             integration.set_status_code(500)
