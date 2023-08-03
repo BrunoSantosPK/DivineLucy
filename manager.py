@@ -17,6 +17,10 @@ def seed() -> None:
     actions.create_default_items()
 
 
+def wallets() -> None:
+    actions.create_test_wallets()
+
+
 def pipe() -> None:
     delete()
     create()
@@ -30,7 +34,7 @@ if __name__ == "__main__":
     
     
     # Faz a chamada da função passada como parâmetro
-    available = ["create", "delete", "seed", "pipe"]
+    available = ["create", "delete", "seed", "pipe", "wallets"]
     args = sys.argv
     if len(args) != 2:
         raise Exception("Comando inválido, utilize sempre python manager.py <nome_da_funcao>.")

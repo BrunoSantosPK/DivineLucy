@@ -14,3 +14,12 @@ class RecordDetail(Base):
     description = Column(String(200), nullable=False)
     value = Column(Float, nullable=False)
     create_at = Column(DateTime, default=datetime.utcnow())
+
+    def to_json(self):
+        return {
+            "id": str(self.id),
+            "record_id": str(self.record_id),
+            "description": str(self.description),
+            "value": self.value,
+            "create_at": self.create_at.isoformat(),
+        }

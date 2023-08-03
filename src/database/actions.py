@@ -58,6 +58,22 @@ def create_default_items() -> None:
         session.close()
 
 
+def create_test_wallets() -> None:
+    try:
+        session = get_session()
+        user_id = "49fe6c42-b940-4122-906b-e95c7316e349"
+        session.add_all([
+            Wallet(id="24d3bbbc-20a2-4350-bf96-408501af4a4b", user_id=user_id, name="Conta Poupança"),
+            Wallet(id="7961fd02-ac54-458a-a9ae-e3d57241aa70", user_id=user_id, name="Carteira Física")
+        ])
+        session.commit()
+        print("Carteiras de teste criadas com sucesso")
+    except BaseException as e:
+        print(str(e))
+    finally:
+        session.close()
+
+
 def delete_tables() -> None:
     try:
         Base.metadata.drop_all(get_engine())

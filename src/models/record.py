@@ -21,3 +21,17 @@ class Record(Base):
     value = Column(Float, nullable=False)
     create_at = Column(DateTime, default=datetime.utcnow())
     modified_at = Column(DateTime, nullable=True)
+
+    def to_json(self):
+        return {
+            "id": str(self.id),
+            "user_id": str(self.user_id),
+            "item_id": str(self.item_id) if self.item_id is not None else None,
+            "target_wallet": str(self.target_wallet),
+            "origin_wallet": str(self.origin_wallet) if self.origin_wallet is not None else None,
+            "moviment_date": self.modified_at.isoformat(),
+            "description": self.description,
+            "value": self.value,
+            "create_at": self.create_at.isoformat(),
+            "modified_at": self.modified_at.isoformat() if self.modified_at is not None else None
+        }
