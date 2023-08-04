@@ -140,15 +140,29 @@ class RecordService:
         session = get_session()
 
         try:
+            # Recupera informações do banco
             per_page = 100
-            records: List[Record] = session.query(Record).order_by(Record.moviment_date.desc())\
+            records: List[Record] = session.query(Record).filter(Record.user_id == user_id)\
+                .order_by(Record.moviment_date.desc())\
                 .limit(per_page).offset((page - 1) * per_page).all()
             records_id = [str(r.id) for r in records]
-            details = session.query(RecordDetail).filter(RecordDetail.record_id in records_id).all()
+            details: List[RecordDetail] = session.query(RecordDetail)\
+                .filter(RecordDetail.record_id.in_ (records_id)).all()
 
-            # Todo: fazer o merge das informações
+            # Organiza os dados de detalhes em dicionário
+            details_data = {}
+            for record_id in set([str(d.record_id) for d in details]):
+                details_data[record_id] = []
+            for detail in details:
+                details_data[str(detail.record_id)].append(detail.to_json())
 
-            res.records = [r.to_json() for r in records]
+            res.records = []
+            for record in records:
+                d = record.to_json()
+                d["details"] = []
+                if str(record.id) in details_data.keys():
+                    d["details"] = details_data[str(record.id)]
+                res.records.append(d)
 
         except BaseException as e:
             session.rollback()

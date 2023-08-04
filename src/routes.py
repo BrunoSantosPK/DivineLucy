@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from src.controllers.wallet import WalletController
 from src.controllers.budget import BudgetController
+from src.controllers.record import RecordController
 from flask import Flask, render_template, Response, request
 from src.controllers.classification_item import ClassificationItemController
 
@@ -74,4 +75,22 @@ def manage_items():
         result = ClassificationItemController.new()
     elif request.method == "DELETE":
         result = ClassificationItemController.delete()
+    return Response(result.to_json(), result.get_status_code())
+
+
+@app.route("/record", methods=["POST", "PUT", "DELETE"])
+def get_records():
+    result = None
+    if request.method == "POST":
+        result = RecordController.new()
+    elif request.method == "PUT":
+        result = RecordController.edit()
+    elif request.method == "DELETE":
+        result = RecordController.delete()
+    return Response(result.to_json(), result.get_status_code())
+
+
+@app.route("/record/<user_id>", methods=["GET"])
+def manage_records(user_id: str):
+    result = RecordController.get_all()
     return Response(result.to_json(), result.get_status_code())

@@ -29,7 +29,7 @@ class Record(Base):
             "item_id": str(self.item_id) if self.item_id is not None else None,
             "target_wallet": str(self.target_wallet),
             "origin_wallet": str(self.origin_wallet) if self.origin_wallet is not None else None,
-            "moviment_date": self.modified_at.isoformat(),
+            "moviment_date": self.moviment_date.isoformat(),
             "description": self.description,
             "value": self.value,
             "create_at": self.create_at.isoformat(),

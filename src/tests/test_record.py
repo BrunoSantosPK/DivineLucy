@@ -44,6 +44,14 @@ def test_service_new_record_with_details():
     assert res.success
 
 
+def test_service_get_records_with_details():
+    res = RecordService.get_all(track_test_data["user_id"], page=1)
+    assert res.message == ""
+    assert len(res.records) == 1
+    assert res.records[0]["id"] == track_test_data["record_id_service"]
+    assert len(res.records[0]["details"]) == 2
+
+
 def test_service_delete_record_with_detail():
     res = RecordService.delete(track_test_data["record_id_service"], track_test_data["user_id"])
     assert res.message == ""
@@ -99,11 +107,12 @@ def test_service_update_record_remove_origin_alter_value():
     assert res.success
 
 
-def test_service_get_records():
+def test_service_get_records_without_details():
     res = RecordService.get_all(track_test_data["user_id"], page=1)
     assert res.message == ""
     assert len(res.records) == 1
     assert res.records[0]["id"] == track_test_data["record_id_service"]
+    assert len(res.records[0]["details"]) == 0
 
 
 def test_service_get_records_next_page():
