@@ -168,6 +168,26 @@ def test_controller_edit_record_remove_details_and_add_origin(client: FlaskClien
     assert data["status_code"] == 200
 
 
+def test_controller_get_records_withou_details_page_one(client: FlaskClient):
+    res = client.get(f"/record/{track_test_data['user_id']}?page=1")
+    data = json.loads(res.get_data(as_text=True))
+    
+    assert data["message"] == ""
+    assert data["status_code"] == 200
+    assert len(data["data"]) == 1
+    assert data["data"][0]["id"] == track_test_data["record_id_controller"]
+    assert len(data["data"][0]["details"]) == 0
+
+
+def test_controller_get_records_page_empty(client: FlaskClient):
+    res = client.get(f"/record/{track_test_data['user_id']}?page=2")
+    data = json.loads(res.get_data(as_text=True))
+    
+    assert data["message"] == ""
+    assert data["status_code"] == 200
+    assert len(data["data"]) == 0
+
+
 def test_controller_delete_record_with_details(client: FlaskClient):
     body = {
         "user_id": track_test_data["user_id"],
@@ -218,6 +238,17 @@ def test_controller_edit_record_add_details_remove_origin(client: FlaskClient):
 
     assert data["message"] == ""
     assert data["status_code"] == 200
+
+
+def test_controller_get_records_with_details_default_page(client: FlaskClient):
+    res = client.get(f"/record/{track_test_data['user_id']}")
+    data = json.loads(res.get_data(as_text=True))
+
+    assert data["message"] == ""
+    assert data["status_code"] == 200
+    assert len(data["data"]) == 1
+    assert data["data"][0]["id"] == track_test_data["record_id_controller"]
+    assert len(data["data"][0]["details"]) == 2
 
 
 def test_controller_delete_record_witout_details(client: FlaskClient):
