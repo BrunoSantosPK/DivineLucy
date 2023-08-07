@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Tuple, List
+from sqlalchemy.sql import func
 from src.models.wallet import Wallet
+from src.models.record import Record
 from src.database.connect import get_session
 
 
@@ -57,14 +59,21 @@ class WalletService:
 
         try:
             result: List[Wallet] = session.query(Wallet).filter(Wallet.user_id == user_id).all()
-            data = [{
-                "id": str(r.id),
-                "name": r.name,
-                "create_at": r.create_at.isoformat(),
-                "total_income": 0,
-                "total_outcome": 0,
-                "current_value": 0
-            } for r in result]
+            for wallet in result:
+                q = session.query(func.sum(Record.value).label("result_value"))
+                r_income = q.filter(Record.user_id == user_id, Record.target_wallet == wallet.id, Record.value > 0).all()
+                r_outcome = q.filter(Record.user_id == user_id, Record.target_wallet == wallet.id, Record.value < 0).all()
+                income = sum([v.result_value for v in r_income])
+                outcome = sum([v.result_value for v in r_outcome])
+
+                data.append({
+                    "id": str(wallet.id),
+                    "name": wallet.name,
+                    "create_at": wallet.create_at.isoformat(),
+                    "total_income": income,
+                    "total_outcome": outcome,
+                    "current_value": income + outcome
+                })
             
         except BaseException as e:
             message = str(e)

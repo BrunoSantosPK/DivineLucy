@@ -2,6 +2,7 @@ import calendar
 from typing import Tuple, List
 from datetime import date, datetime
 from src.models.budget import Budget
+from src.models.record import Record
 from src.database.connect import get_session
 
 
@@ -94,16 +95,23 @@ class BudgetService:
                 Budget.start_date >= start_date,
                 Budget.end_date <= end_date
             ).all()
-            budgets = [{
-                "id": str(r.id),
-                "user_id": str(r.user_id),
-                "item_id": str(r.item_id),
-                "start_date": r.start_date.isoformat(),
-                "end_date": r.end_date.isoformat(),
-                "value": r.value,
-                "create_at": r.create_at.isoformat(),
-                "modified_at": r.modified_at.isoformat()
-            } for r in result]
+            for r in result:
+                records: List[Record] = session.query(Record).filter(
+                    Record.item_id == str(r.item_id),
+                    Record.moviment_date >= start_date,
+                    Record.moviment_date <= end_date
+                ).all()
+                budgets.append({
+                    "id": str(r.id),
+                    "user_id": str(r.user_id),
+                    "item_id": str(r.item_id),
+                    "start_date": r.start_date.isoformat(),
+                    "end_date": r.end_date.isoformat(),
+                    "value": r.value,
+                    "real": sum([abs(v.value) for v in records]),
+                    "create_at": r.create_at.isoformat(),
+                    "modified_at": r.modified_at.isoformat() if r.modified_at is not None else None
+                })
 
         except BaseException as e:
             message = str(e)
