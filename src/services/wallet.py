@@ -22,7 +22,7 @@ class WalletService:
             wallet = Wallet(name=name, user_id=user_id, create_at=datetime.utcnow())
             session.add(wallet)
             session.commit()
-            wallet_id = wallet.id
+            wallet_id = str(wallet.id)
 
         except BaseException as e:
             wallet_id = ""
@@ -58,13 +58,13 @@ class WalletService:
         data, message = [], ""
 
         try:
-            result: List[Wallet] = session.query(Wallet).filter(Wallet.user_id == user_id).all()
+            result: List[Wallet] = session.query(Wallet).filter(Wallet.user_id == user_id).order_by(Wallet.create_at.desc()).all()
             for wallet in result:
                 q = session.query(func.sum(Record.value).label("result_value"))
                 r_income = q.filter(Record.user_id == user_id, Record.target_wallet == wallet.id, Record.value > 0).all()
                 r_outcome = q.filter(Record.user_id == user_id, Record.target_wallet == wallet.id, Record.value < 0).all()
-                income = sum([v.result_value for v in r_income])
-                outcome = sum([v.result_value for v in r_outcome])
+                income = sum([v.result_value for v in r_income if v.result_value is not None])
+                outcome = sum([v.result_value for v in r_outcome if v.result_value is not None])
 
                 data.append({
                     "id": str(wallet.id),

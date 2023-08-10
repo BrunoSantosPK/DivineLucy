@@ -1,4 +1,56 @@
-function loadOptions() {
+class BudgetState {
+    constructor(userID) {
+        this.userID = userID;
+        this.resBudget = {status_code: 400, message: "", data: []};
+        this.resItems = {status_code: 400, message: "", data: []};
+    }
+
+    getUserID() {
+        return this.userID;
+    }
+
+    getBudgets() {
+        return this.resBudget.data;
+    }
+
+    getItems() {
+        return this.resItems.data;
+    }
+
+    async updateBudgets(month, year) {
+        try {
+            const req = await fetch(`/budget/${this.userID}?month=${month}&year=${year}`, {method: "GET"});
+            const res = await req.json();
+            if(res.status_code != 200) {
+                throw Error(res.message);
+            }
+            this.resBudget = res;
+        } catch(error) {
+            alert(error.message);
+        }
+    }
+
+    async updateItems() {
+        try {
+            const req = await fetch(`/item/${this.userID}`, {method: "GET"});
+            const res = await req.json();
+            if(res.status_code != 200) {
+                throw Error(res.message);
+            }
+            this.resItems = res;
+        } catch(error) {
+            alert(error.message);
+        }
+    }
+}
+
+const userID = "49fe6c42-b940-4122-906b-e95c7316e349";
+const budgetState = new BudgetState(userID);
+
+async function loadOptions() {
+    // Carrega itens
+    await budgetState.updateItems();
+
     // Os meses são sempre fixos
     const mData = [
         { number: 0, name: "Selecione o mês" },
@@ -45,7 +97,7 @@ function loadOptions() {
     });
 }
 
-function renderBudgets() {
+async function renderBudgets() {
     // Recupera mês e ano
     const month = parseInt(document.getElementById("budget-month").value);
     const year = parseInt(document.getElementById("budget-year").value);
@@ -56,37 +108,24 @@ function renderBudgets() {
         return;
     }
 
-    // Estrutura de dados para render
-    const demoResponse = {
-        status_code: 200,
-        message: "",
-        data: [{
-            item: "Supermercado", budget: 400, real: 439.38, id: "lambari1"
-        }, {
-            item: "Tecnologia", budget: 150, real: 199.99, id: "lambari2"
-        }, {
-            item: "Saúde", budget: 100, real: 63.8, id: "lambari3"
-        }, {
-            item: "Emergência", budget: 100, real: 448.96, id: "lambari4"
-        }, {
-            item: "Lazer", budget: 100, real: 29.9, id: "lambari5"
-        }]
-    };
+    // Atualiza dados de metas
+    await budgetState.updateBudgets(month, year);
+    const items = budgetState.getItems();
 
     // Remove dados antigos e preenche os novos
     $("#budget-area").html("");
     const currency = new Intl.NumberFormat("pt-br", {style: "currency", currency: "BRL"});
-    demoResponse.data.forEach(item => {
+    budgetState.getBudgets().forEach(item => {
         $("#budget-area").append(`
             <div class="budget-row">
                 <div class="col-4">
-                    <h5>${item.item}</h5>
+                    <h5>${items.find(e => e.id == item.item_id).name}</h5>
                 </div>
                 <div class="col-3">
-                    <h5>${currency.format(item.budget)}</h5>
+                    <h5>${currency.format(item.value)}</h5>
                 </div>
                 <div class="col-3">
-                    <h5 class="${item.real > item.budget ? "warning": ""}">${currency.format(item.real)}</h5>
+                    <h5 class="${item.real > item.value ? "warning": ""}">${currency.format(item.real)}</h5>
                 </div>
                 <div class="col-2">
                     <div class="actions">
@@ -97,6 +136,59 @@ function renderBudgets() {
             </div>
         `);
     });
+}
+
+async function saveBudget() {
+    try {
+        // Recupera dados e valida seleções
+        const month = parseInt(document.getElementById("budget-month").value);
+        const year = parseInt(document.getElementById("budget-year").value);
+        let itemID = document.getElementById("budget-items").value;
+        const itemName = document.getElementById("new-item").value;
+        const value = parseFloat(document.getElementById("budget-value").value);
+
+        if(itemID == "" && itemName.length < 5) {
+            throw new Error("Para cadastrar um novo item, informe um nome com ao menos 5 caracteres.");
+        }
+        if(isNaN(value) || value <= 0) {
+            throw new Error("Informe um valor positivo para a meta.");
+        }
+        if(month == 0 || year == 0) {
+            throw new Error("Selecione mês e ano para cadastrar a meta.");
+        }
+
+        // Cadatras um novo item, caso necessário
+        if(itemID == "") {
+            let req = await fetch("/item", {
+                method: "POST",
+                body: JSON.stringify({user_id: budgetState.getUserID(), name: itemName})
+            });
+            let res = await req.json();
+            if(res.status_code != 200) {
+                throw Error(res.message);
+            }
+            itemID = res.data.item_id;
+
+            // Atualiza registro de itens interno
+            await budgetState.updateItems();
+        }
+
+        // Cadastra a meta
+        const body = {user_id: budgetState.getUserID(), year, month, item_id: itemID, value};
+        req = await fetch("/budget", {method: "POST", body: JSON.stringify(body)});
+        res = await req.json();
+        if(res.status_code != 200) {
+            throw Error(res.message);
+        }
+
+        // Exibe feedback e chama o render
+        alert("Meta cadastrada com sucesso.");
+        renderBudgets();
+        closeModal();
+
+    } catch(error) {
+        alert(error.message);
+    }
 }
 
 function deleteBudget(id) {
@@ -114,26 +206,13 @@ function newBudget() {
     openModal();
 }
 
-function openModal() {
+async function openModal() {
     // Estrutura de dados para render
-    const demoResponse = {
-        status_code: 200,
-        message: "",
-        data: [{
-            id: "item1", name: "Supermercado"
-        },{
-            id: "item2", name: "Tecnologia"
-        }, {
-            id: "item3", name: "Saúde"
-        }, {
-            id: "item4", name: "Emergência"
-        }, {
-            id: "item5", name: "Lazer"
-        }]
-    };
     const select = document.getElementById("budget-items");
-    while(select.hasChildNodes()) { select.removeChild(select.firstChild); }
-    demoResponse.data.forEach(item => {
+    while(select.hasChildNodes()) {
+        select.removeChild(select.firstChild);
+    }
+    budgetState.getItems().forEach(item => {
         let opt = document.createElement("option");
         opt.value = item.id;
         opt.textContent = item.name;
