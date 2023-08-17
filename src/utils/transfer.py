@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 
 class Transfer:
@@ -18,6 +19,12 @@ class Transfer:
 
     def get_status_code(self) -> int:
         return self.__status_code
+    
+    def get_message(self) -> str:
+        return self.__message
+    
+    def get_data(self) -> Any:
+        return self.__data
 
     def to_json(self) -> str:
         return json.dumps({
