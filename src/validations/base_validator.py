@@ -1,5 +1,6 @@
 import json, re
 from uuid import UUID
+from datetime import date
 from src.utils.transfer import Transfer
 from src.policies.auth import AuthPolicy
 from typing import Tuple, Type, List, Any
@@ -68,6 +69,33 @@ class BaseValidator:
             if body[field] is not None and type(body[field]) != _type:
                 res.set_status_code(400)
                 res.set_message(f"O campo '{field}' deve ser do tipo {_type.__name__}")
+                break
+
+        return res
+    
+    @staticmethod
+    def validate_list_of_dict(array: List[dict], fields: List[Tuple[str, Type]]) -> Transfer:
+        '''
+        Verifica se uma listagem de elementos em formato JSON possui os campos e tipos especificados.
+
+        Argumentos:
+        array: lista de dicionários que será avaliada
+        fields: lista de tuplas em que a primeira posição é o nome do campo e o segundo o tipo
+        '''
+        res = Transfer()
+        for element in array:
+            for field, _type in fields:
+                if field not in element.keys():
+                    res.set_status_code(400)
+                    res.set_message(f"O campo '{field}' não está presente na listagem")
+                    break
+
+                if type(element[field]) != _type:
+                    res.set_status_code(400)
+                    res.set_message(f"O campo {field} deve ser do tipo {_type.__name__}")
+                    break
+            
+            if res.get_status_code() == 400:
                 break
 
         return res
@@ -157,5 +185,16 @@ class BaseValidator:
             res.set_status_code(400)
             res.set_message(str(e))
 
+        finally:
+            return res
+        
+    @staticmethod
+    def validate_date_string(value: str) -> Transfer:
+        res = Transfer()
+        try:
+            date.fromisoformat(value)
+        except:
+            res.set_status_code(400)
+            res.set_message("Uma data precisa estar no formato yyyy-mm-dd")
         finally:
             return res

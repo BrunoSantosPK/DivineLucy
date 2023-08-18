@@ -1,4 +1,4 @@
-import jwt, os
+import jwt, os, hashlib, binascii
 from src.utils.transfer import Transfer
 from datetime import datetime, timedelta
 
@@ -21,7 +21,7 @@ class AuthPolicy:
             return res
 
     @staticmethod
-    def decode(token: str) -> Transfer:
+    def decode_jwt(token: str) -> Transfer:
         res = Transfer()
         try:
             payload = jwt.decode(token.encode("utf-8"), os.getenv("SECRET_AUTH"), algorithms=["HS256"])
@@ -50,9 +50,24 @@ class AuthPolicy:
             jwt.decode(token.encode("utf-8"), os.getenv("SECRET_AUTH"), algorithms=["HS256"])
             res.set_status_code(200)
 
-        except jwt.InvalidTokenError:
+        except jwt.DecodeError:
             res.set_status_code(500)
             res.set_message("O token de autenticação não é válido")
 
+        finally:
+            return res
+        
+    @staticmethod
+    def crypt_pass(pw: str) -> Transfer:
+        res = Transfer()
+        try:
+            token = os.getenv("SECRET_PASS")
+            pw = (pw + token).encode("utf-8")
+            hash = hashlib.pbkdf2_hmac("sha256", pw, token.encode("utf-8"), 100000)
+            hash = binascii.hexlify(hash).decode("ascii")
+            res.set_data(token)
+        except BaseException as e:
+            res.set_status_code(500)
+            res.set_message(str(e))
         finally:
             return res
