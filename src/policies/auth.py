@@ -71,3 +71,36 @@ class AuthPolicy:
             res.set_message(str(e))
         finally:
             return res
+        
+    @staticmethod
+    def valid_password(pw: str) -> Transfer:
+        res = Transfer()
+        chars = "abcdefghijklmnopqrstuvwxyz"
+        nums = "0123456789"
+
+        try:
+            if len(pw) < 8:
+                raise Exception("A senha deve ter ao menos 8 caracteres")
+            
+            def valid(chain: str, obj: str) -> bool:
+                is_valid = False
+                for c in chain:
+                    if c in obj:
+                        is_valid = True
+                        break
+                return is_valid
+            
+            if not valid(chars, pw):
+                raise Exception("A senha deve ter ao menos 1 caractere minúsculo")
+            
+            if not valid(chars.upper(), pw):
+                raise Exception("A senha deve ter ao menos 1 caractere maiúsculo")
+            
+            if not valid(nums, pw):
+                raise Exception("A senha deve ter ao menos 1 número")
+            
+        except BaseException as e:
+            res.set_status_code(500)
+            res.set_message(str(e))
+        finally:
+            return res

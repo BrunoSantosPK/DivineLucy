@@ -1,11 +1,7 @@
-import os
 from uuid import uuid4
-from dotenv import load_dotenv
 from src.policies.auth import AuthPolicy
 
 
-BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-load_dotenv(f"{BASE_PATH}/config/.env")
 config_policy = {
     "user_id": str(uuid4()),
     "jwt": "",
@@ -48,3 +44,30 @@ def test_decode_expired_jwt():
     result = AuthPolicy.decode_jwt(config_policy["old_jwt"])
     assert result.get_status_code() == 500
     assert result.get_message() == "Sua sessão expirou"
+
+
+class TestPassword:
+    def test_short_password(self):
+        result = AuthPolicy.valid_password("lambari")
+        assert result.get_status_code() == 500
+        assert result.get_message() == "A senha deve ter ao menos 8 caracteres"
+
+    def test_password_without_upper(self):
+        result = AuthPolicy.valid_password("lambaroso")
+        assert result.get_status_code() == 500
+        assert result.get_message() == "A senha deve ter ao menos 1 caractere maiúsculo"
+
+    def test_password_without_lower(self):
+        result = AuthPolicy.valid_password("LAMBAROSO")
+        assert result.get_status_code() == 500
+        assert result.get_message() == "A senha deve ter ao menos 1 caractere minúsculo"
+
+    def test_password_without_number(self):
+        result = AuthPolicy.valid_password("Lambaroso")
+        assert result.get_status_code() == 500
+        assert result.get_message() == "A senha deve ter ao menos 1 número"
+
+    def test_valid_password(self):
+        result = AuthPolicy.valid_password("Lambaroso1")
+        assert result.get_status_code() == 200
+        assert result.get_message() == ""

@@ -3,6 +3,7 @@ from src.models.user import User
 from src.models.budget import Budget
 from src.models.record import Record
 from src.models.wallet import Wallet
+from src.models.user_recover import UserRecover
 from src.models.record_detail import RecordDetail
 from src.database.connect import get_engine, get_session
 from src.models.classification_item import ClassificationItem

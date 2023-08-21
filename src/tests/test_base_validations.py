@@ -1,11 +1,4 @@
-import os
-from dotenv import load_dotenv
 from src.validations.base_validator import BaseValidator
-
-
-BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-load_dotenv(f"{BASE_PATH}/config/.env")
-
 
 def test_null_body():
     body = None
