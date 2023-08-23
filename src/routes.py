@@ -1,5 +1,8 @@
 import os
 from dotenv import load_dotenv
+from src.utils.execution import Execution
+from src.controllers.user import UserController
+from src.validations.user import UserValidation
 from src.controllers.wallet import WalletController
 from src.controllers.budget import BudgetController
 from src.controllers.record import RecordController
@@ -10,6 +13,12 @@ from src.controllers.classification_item import ClassificationItemController
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(f"{BASE_PATH}/config/.env")
 app = Flask(__name__)
+
+
+@app.route("/login", methods=["POST", "GET"])
+def login():
+    if request.method == "POST":
+        return Execution.run(UserValidation.post_login, UserController.login)
 
 
 @app.route("/", methods=["GET"])

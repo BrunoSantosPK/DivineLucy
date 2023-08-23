@@ -7,6 +7,7 @@ class Transfer:
         self.__message = ""
         self.__status_code = 200
         self.__data = None
+        self.__html: str = None
 
     def set_data(self, data) -> None:
         self.__data = data
@@ -25,6 +26,12 @@ class Transfer:
     
     def get_data(self) -> Any:
         return self.__data
+    
+    def send(self) -> str:
+        if self.__html is not None:
+            return self.__html
+        else:
+            return self.to_json()
 
     def to_json(self) -> str:
         return json.dumps({

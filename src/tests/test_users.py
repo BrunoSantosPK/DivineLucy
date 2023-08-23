@@ -1,6 +1,8 @@
-import pytest
+import pytest, json
 from uuid import UUID
+from src.routes import app
 from datetime import datetime
+from flask.testing import FlaskClient
 from src.services.user import UserService
 
 
@@ -117,3 +119,34 @@ class TestUserService:
         result = UserService.delete(track_data["user_id"])
         assert result.success
         assert result.message == ""
+
+
+class TestUserController:
+    @pytest.fixture(scope="class", autouse=True)
+    def client(self):
+        with app.test_client() as client:
+            yield client
+
+    def test_login_without_body(self, client: FlaskClient):
+        res = client.post("/login")
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 400
+        assert data["message"] == "O corpo informado não é um json válido"
+
+    def test_login_body_without_email(self, client: FlaskClient):
+        res = client.post("/login", json={})
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 400
+        assert data["message"] == "O campo obrigatório 'email' não foi encontrado"
+
+    def test_login_body_without_password(self, client: FlaskClient):
+        res = client.post("/login", json={"email": "root@root.com"})
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 400
+        assert data["message"] == "O campo obrigatório 'password' não foi encontrado"
+
+    def test_login_invalid_credentials(self, client: FlaskClient):
+        res = client.post("/login", json={"email": "root@root.com", "password": "root"})
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 500
+        assert data["message"] == "Usuário ou senha inválidos"
