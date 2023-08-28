@@ -19,6 +19,8 @@ app = Flask(__name__)
 def login():
     if request.method == "POST":
         return Execution.run(UserValidation.post_login, UserController.login)
+    elif request.method == "GET":
+        return render_template("login.html")
 
 
 @app.route("/", methods=["GET"])

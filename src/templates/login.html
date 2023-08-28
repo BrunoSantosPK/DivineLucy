@@ -4,24 +4,62 @@
     <head>
         {% include "fragments/head.html" %}
         <title>Lucy Gestão Pessoal</title>
+        <script src="/static/js/login.js"></script>
     </head>
 
     <body>
         <div class="page">
             {% include "fragments/menu.html" %}
 
-            <div class="content">
-                <div class="container">
+            <div class="content login-content">
 
-                    Página de login
-
+                <div class="login-box" id="login">
+                    <h2>Lucy</h2>
+                    <input type="email" id="email" placeholder="Seu e-mail">
+                    <input type="password" id="password" placeholder="Sua senha">
+                    <div class="login-button">
+                        <span>Acessar</span>
+                    </div>
+                    <div class="login-options">
+                        <span onclick="show('subscribe')">Criar conta</span>
+                        <span onclick="show('recover')">Esqueci a senha</span>
+                    </div>
                 </div>
+
+                <div class="login-box hide" id="recover">
+                    <h2>Recuperação</h2>
+                    <input type="email" id="email-recover" placeholder="Seu e-mail">
+                    <div class="login-button">
+                        <span>Solicitar</span>
+                    </div>
+                    <div class="login-options">
+                        <span onclick="show('login')">Login</span>
+                        <span onclick="show('subscribe')">Criar conta</span>
+                    </div>
+                </div>
+
+                <div class="login-box hide" id="subscribe">
+                    <h2>Cadastro</h2>
+                    <input type="email" id="email-subscribe" placeholder="Informe um e-mail">
+                    <input type="password" id="password-subscribe" placeholder="Crie sua senha">
+                    <input type="password" id="password-subscribe2" placeholder="Repita a senha">
+                    <div class="login-button">
+                        <span>Cadastrar</span>
+                    </div>
+                    <div class="login-options">
+                        <span onclick="show('login')">Login</span>
+                        <span onclick="show('recover')">Esqueci a senha</span>
+                    </div>
+                </div>
+
             </div>
 
             {% include "fragments/footer.html" %}
         </div>
     </body>
 
-    <script></script>
+    <script>
+        
+    </script>
 
 </html>
