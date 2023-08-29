@@ -21,6 +21,16 @@ def login():
         return Execution.run(UserValidation.post_login, UserController.login)
     elif request.method == "GET":
         return render_template("login.html")
+    
+
+@app.route("/user", methods=["POST"])
+def manager_user():
+    return Execution.run(UserValidation.post_new, UserController.new)
+
+
+@app.route("/recover", methods=["POST"])
+def request_recover():
+    return Execution.run(UserValidation.post_recover, UserController.recover_password)
 
 
 @app.route("/", methods=["GET"])

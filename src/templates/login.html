@@ -17,7 +17,7 @@
                     <h2>Lucy</h2>
                     <input type="email" id="email" placeholder="Seu e-mail">
                     <input type="password" id="password" placeholder="Sua senha">
-                    <div class="login-button">
+                    <div class="login-button" onclick="login()">
                         <span>Acessar</span>
                     </div>
                     <div class="login-options">
@@ -29,7 +29,7 @@
                 <div class="login-box hide" id="recover">
                     <h2>Recuperação</h2>
                     <input type="email" id="email-recover" placeholder="Seu e-mail">
-                    <div class="login-button">
+                    <div class="login-button" onclick="recover()">
                         <span>Solicitar</span>
                     </div>
                     <div class="login-options">
@@ -41,9 +41,10 @@
                 <div class="login-box hide" id="subscribe">
                     <h2>Cadastro</h2>
                     <input type="email" id="email-subscribe" placeholder="Informe um e-mail">
+                    <input type="text" id="name-subscribe" placeholder="Qual o seu nome?">
                     <input type="password" id="password-subscribe" placeholder="Crie sua senha">
                     <input type="password" id="password-subscribe2" placeholder="Repita a senha">
-                    <div class="login-button">
+                    <div class="login-button" onclick="subscribe()">
                         <span>Cadastrar</span>
                     </div>
                     <div class="login-options">
@@ -58,8 +59,6 @@
         </div>
     </body>
 
-    <script>
-        
-    </script>
+    <script></script>
 
 </html>

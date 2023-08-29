@@ -65,7 +65,7 @@ class AuthPolicy:
             pw = (pw + token).encode("utf-8")
             hash = hashlib.pbkdf2_hmac("sha256", pw, token.encode("utf-8"), 100000)
             hash = binascii.hexlify(hash).decode("ascii")
-            res.set_data(token)
+            res.set_data(hash)
         except BaseException as e:
             res.set_status_code(500)
             res.set_message(str(e))

@@ -10,4 +10,7 @@ class Execution:
             res = func()
             if res.get_status_code() != 200:
                 break
-        return Response(res.send(), res.get_status_code())
+        response = Response(res.send(), res.get_status_code())
+        for d in res.get_cookies():
+            response.set_cookie(d["name"], d["value"])
+        return response
