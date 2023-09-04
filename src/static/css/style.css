@@ -4,6 +4,11 @@ body { font-family: 'Urbanist', sans-serif; }
 .page { background-color: #599ff5; color: #454e58; }
 .modal-header span { cursor: pointer; }
 
+.error-content { display: flex; justify-content: center; align-items: center; flex-direction: column; }
+.error-content .title { font-size: 100px; font-weight: bold; }
+.error-content .subtitle { font-size: 30px; }
+.error-content .text { font-size: 20px; font-style: italic; }
+
 .login-content { display: flex; justify-content: center; align-items: center; }
 .login-content .login-box { background-color: #b3dafb; padding: 10px 40px; border-radius: 20px; display: flex; flex-direction: column; min-width: 30vw; min-height: 40vh; justify-content: space-between; }
 .login-content .login-box h2 { font-size: 40px; text-align: center; }

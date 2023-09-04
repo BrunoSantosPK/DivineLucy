@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <head>
+        {% include "fragments/head.html" %}
+        <title>Lucy Gestão Pessoal</title>
+        <script src="/static/js/recover.js"></script>
+    </head>
+
+    <body>
+        <div class="page" id="recover-page" recover-id={{recover}}>
+            {% include "fragments/menu.html" %}
+
+            <div class="content login-content">
+
+                <div class="login-box" id="recover">
+                    <h2>Recuperar senha</h2>
+                    <input type="password" id="password" placeholder="Nova senha">
+                    <input type="password" id="password-repeat" placeholder="Repita a senha">
+                    <div class="login-button" onclick="recover()">
+                        <span>Acessar</span>
+                    </div>
+                </div>
+
+            </div>
+
+            {% include "fragments/footer.html" %}
+        </div>
+    </body>
+
+    <script></script>
+
+</html>

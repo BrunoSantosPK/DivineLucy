@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <head>
+        {% include "fragments/head.html" %}
+        <title>Lucy Gestão Pessoal</title>
+    </head>
+
+    <body>
+        <div class="page">
+            {% include "fragments/menu.html" %}
+
+            <div class="content error-content">
+
+                <span class="title">404</span>
+                <span class="subtitle">Opa, parece que alguma coisa ruim aconteceu...</span>
+                <span class="text">{{ message }}</span>
+
+            </div>
+
+            {% include "fragments/footer.html" %}
+        </div>
+    </body>
+
+    <script></script>
+
+</html>

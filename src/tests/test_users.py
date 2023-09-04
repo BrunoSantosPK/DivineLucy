@@ -127,6 +127,10 @@ class TestUserController:
         with app.test_client() as client:
             yield client
 
+    @pytest.fixture(scope="class")
+    def params(self):
+        return {"token": None, "user_id": None}
+
     def test_login_without_body(self, client: FlaskClient):
         res = client.post("/login")
         data = json.loads(res.get_data(as_text=True))
@@ -150,3 +154,82 @@ class TestUserController:
         data = json.loads(res.get_data(as_text=True))
         assert res.status_code == 500
         assert data["message"] == "Usuário ou senha inválidos"
+
+    def test_not_auth(self, client: FlaskClient):
+        res = client.get("/auth")
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 401
+        assert data["message"] == "Você não está logado no sistema"
+
+    def test_success_login(self, client: FlaskClient, params: dict):
+        res = client.post("/login", json={"email": "bruno.19ls@gmail.com", "password": "Lambaroso1"})
+        data = json.loads(res.get_data(as_text=True))
+        params["token"] = data["data"]["token"]
+        params["user_id"] = data["data"]["user_data"]["user_id"]
+        assert res.status_code == 200
+        assert data["message"] == ""
+
+    def test_is_auth(self, client: FlaskClient, params: dict):
+        client.set_cookie("token", params["token"])
+        client.set_cookie("user_id", params["user_id"])
+        res = client.get("/auth")
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 200
+        assert data["message"] == ""
+
+    def test_request_recover_invalid_email(self, client: FlaskClient):
+        res = client.post("/recover", json={"email": "bruno19ls@gmail.com"})
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 500
+        assert data["message"] == "O usuário não foi encontrado"
+
+    def test_request_recover(self, client: FlaskClient):
+        res = client.post("/recover", json={"email": "bruno.19ls@gmail.com"})
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 200
+        assert data["message"] == ""
+
+    def test_change_password_by_request_invalid_body(self, client: FlaskClient):
+        res = client.put("/recover", json={})
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 400
+        assert data["message"] == "O campo obrigatório 'password' não foi encontrado"
+
+        res = client.put("/recover", json={"password": "lambari"})
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 400
+        assert data["message"] == "O campo obrigatório 'repeat_password' não foi encontrado"
+
+        res = client.put("/recover", json={"password": "lambari", "repeat_password": "lambaroso"})
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 400
+        assert data["message"] == "O campo obrigatório 'recover_id' não foi encontrado"
+
+    def test_change_password_by_request_invalid_password(self, client: FlaskClient):
+        recover_id = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+        body = {"password": "lambari", "repeat_password": "lambaroso", "recover_id": recover_id}
+
+        res = client.put("/recover", json=body)
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 400
+        assert data["message"] == "As senhas não são iguais"
+
+        body["repeat_password"] = body["password"]
+        res = client.put("/recover", json=body)
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 400
+        assert data["message"] == "A senha deve ter ao menos 8 caracteres"
+
+        body["password"] = "lambaroso"
+        body["repeat_password"] = body["password"]
+        res = client.put("/recover", json=body)
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 400
+        assert data["message"] == "A senha deve ter ao menos 1 caractere maiúsculo"
+
+        body["password"] = "Lambaroso"
+        body["repeat_password"] = body["password"]
+        res = client.put("/recover", json=body)
+        data = json.loads(res.get_data(as_text=True))
+        assert res.status_code == 400
+        assert data["message"] == "A senha deve ter ao menos 1 número"

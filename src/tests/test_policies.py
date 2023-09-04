@@ -10,7 +10,7 @@ config_policy = {
 
 
 def test_valid_crypt():
-    pw, cpw = "lambari", "8jQ615Sg$sVElkDR260*!cx^Fuf687c!6mJ000caqK4q22%%39Ry9j^gz90k5Xy7"
+    pw, cpw = "lambari", "a7e44c34c3e0676ee4e9257b51c8b2f4a991da970f9c155d92283e347ce09391"
     result = AuthPolicy.crypt_pass(pw)
     assert result.get_status_code() == 200
     assert result.get_data() == cpw

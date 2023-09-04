@@ -22,6 +22,9 @@ class Transfer:
     def set_cookie(self, name: str, value: str) -> None:
         self.__cookies.append({"name": name, "value": value})
 
+    def set_html(self, template: str):
+        self.__html = template
+
     def get_status_code(self) -> int:
         return self.__status_code
     
