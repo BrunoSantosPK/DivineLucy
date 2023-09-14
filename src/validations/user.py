@@ -1,8 +1,8 @@
 import json
 from flask import request
 from src.utils.transfer import Transfer
-from src.validations.base_validator import BaseValidator
 from src.policies.auth import AuthPolicy
+from src.validations.base_validator import BaseValidator
 
 
 class UserValidation:
