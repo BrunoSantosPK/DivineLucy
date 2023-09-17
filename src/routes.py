@@ -5,6 +5,7 @@ from src.utils.execution import Execution
 from src.controllers.page import PageController
 from src.controllers.user import UserController
 from src.validations.user import UserValidation
+from src.validations.record import RecordValidator
 from src.controllers.wallet import WalletController
 from src.controllers.budget import BudgetController
 from src.controllers.record import RecordController
@@ -116,11 +117,11 @@ def manage_items():
 @app.route("/record", methods=["POST", "PUT", "DELETE"])
 def get_records():
     if request.method == "POST":
-        return Execution.run(UserController.auth, RecordController.new)
+        return Execution.run(UserController.auth, RecordValidator.post_new, RecordController.new)
     elif request.method == "PUT":
-        return Execution.run(UserController.auth, RecordController.edit)
+        return Execution.run(UserController.auth, RecordValidator.put_edit, RecordController.edit)
     elif request.method == "DELETE":
-        return Execution.run(UserController.auth, RecordController.delete)
+        return Execution.run(UserController.auth, RecordValidator.delete_remove, RecordController.delete)
 
 
 @app.route("/record/<user_id>", methods=["GET"])
