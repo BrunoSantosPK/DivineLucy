@@ -30,7 +30,7 @@ class HomeState {
     }
 }
 
-const userID = "49fe6c42-b940-4122-906b-e95c7316e349";
+const userID = "b334d4ee-b95a-462e-bc7a-b19ec2e242dd";
 const homeState = new HomeState(userID);
 
 async function renderWallets() {
@@ -46,6 +46,7 @@ async function renderWallets() {
     // Estrutura o cartão para cada carteira
     const currency = new Intl.NumberFormat("pt-br", {style: "currency", currency: "BRL"});
     homeState.getWallets().forEach(item => {
+        console.log(item);
         $("#wallet-area").append(`
             <div class="wallet-card">
                 <h4>${item.name}</h4>

@@ -3,8 +3,10 @@ from uuid import uuid4
 from typing import List
 from datetime import datetime, date
 from src.models.record import Record
+from src.models.wallet import Wallet
 from src.database.connect import get_session
 from src.models.record_detail import RecordDetail
+from src.models.classification_item import ClassificationItem
 
 
 class RecordResponse:
@@ -33,6 +35,20 @@ class RecordService:
         session = get_session()
 
         try:
+            # Verifica se o usuário é dono das carteiras e itens informados
+            r = session.query(Wallet).filter(Wallet.user_id == user_id, Wallet.id == target_id).all()
+            if len(r) == 0:
+                raise Exception("O usuário informado não é dono da carteira de destino.")
+            
+            if origin_id is not None:
+                r = session.query(Wallet).filter(Wallet.user_id == user_id, Wallet.id == origin_id).all()
+                if len(r) == 0:
+                    raise Exception("O usuário informado não é dono da carteira de origem.")
+                
+            r = session.query(ClassificationItem).filter(ClassificationItem.id == item_id).first()
+            if r is None or (r.user_id is not None and str(r.user_id) != user_id):
+                raise Exception(f"O usuário informado não possui o item de classificação alocado.")
+            
             record_id = uuid4()
             create = datetime.utcnow()
             record = Record(
@@ -102,6 +118,20 @@ class RecordService:
         session = get_session()
 
         try:
+            # Verifica se o usuário é dono das carteiras e itens informados
+            r = session.query(Wallet).filter(Wallet.user_id == user_id, Wallet.id == target_id).all()
+            if len(r) == 0:
+                raise Exception("O usuário informado não é dono da carteira de destino.")
+            
+            if origin_id is not None:
+                r = session.query(Wallet).filter(Wallet.user_id == user_id, Wallet.id == origin_id).all()
+                if len(r) == 0:
+                    raise Exception("O usuário informado não é dono da carteira de origem.")
+                
+            r = session.query(ClassificationItem).filter(ClassificationItem.id == item_id).first()
+            if r is None or (r.user_id is not None and str(r.user_id) != user_id):
+                raise Exception(f"O usuário informado não possui o item de classificação alocado.")
+
             modified = datetime.utcnow()
             session.query(Record).filter(Record.id == record_id, Record.user_id == user_id).update({
                 Record.item_id: item_id,

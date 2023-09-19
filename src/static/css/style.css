@@ -1,7 +1,7 @@
 * { margin: 0; padding: 0; outline: 0; box-sizing: border-box; }
 body { font-family: 'Urbanist', sans-serif; }
 .hide { display: none !important; }
-.page { background-color: #599ff5; color: #454e58; }
+.page { color: #454e58; }
 .modal-header span { cursor: pointer; }
 
 .error-content { display: flex; justify-content: center; align-items: center; flex-direction: column; }
@@ -19,7 +19,7 @@ body { font-family: 'Urbanist', sans-serif; }
 .login-content .login-box .login-options span { cursor: pointer; font-size: 15px; }
 .login-content .login-box .login-options span:hover { text-decoration: underline; }
 
-.header { min-height: 5vh; border-bottom: 1px solid rgba(255, 255, 255, 0.2); display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 10px 20px; }
+.header { min-height: 5vh; border-bottom: 1px solid rgba(255, 255, 255, 0.2); display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 10px 20px; background-color: #0e172f; color: #fafafa; }
 .header .header-options { display: flex; flex-direction: row; align-items: center; }
 .header .header-options .header-button { margin: 0px 20px; cursor: pointer; transition: opacity 0.2s; }
 .header .header-options .header-button:hover { opacity: 0.6; }
@@ -28,7 +28,8 @@ body { font-family: 'Urbanist', sans-serif; }
 .header .header-user a { color: inherit; text-decoration: none; }
 .header .header-user .header-user-text { margin-left: 5px; }
 
-.content { min-height: 85vh; padding: 20px 0px; }
+.content { min-height: 85vh; padding: 20px 0px; background-color: #fafafa; }
+.content .container { max-width: 600px; }
 .content .wallet-title { display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 30px; align-items: center; }
 .content .wallet-title h3 { font-size: 35px; }
 .content .wallet-title .button { display: flex; flex-direction: row; align-items: center; cursor: pointer; transition: opacity 0.2x; }

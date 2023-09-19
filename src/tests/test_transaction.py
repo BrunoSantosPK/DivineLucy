@@ -28,7 +28,7 @@ class TestTransactionService:
         value = 250
         result = RecordService.new(self.user_id, self.item_id, self.target_id, moviment_date, description, value, origin_id=None, details=[])
         track_data["record_id_simple"] = result.record_id
-
+        assert result.message == ""
         assert result.success
         assert is_uuid(result.record_id)
 
@@ -39,11 +39,13 @@ class TestTransactionService:
         details = [RecordDetails("Item 1", 200), RecordDetails("Item 2", 50)]
         result = RecordService.new(self.user_id, self.item_id, self.target_id, record_date, description, value, origin_id=self.origin_id, details=details)
         track_data["record_id_detail"] = result.record_id
+        assert result.message == ""
         assert result.success
         assert is_uuid(result.record_id)
 
     def test_get_records_page_1(self):
         result = RecordService.get_all(self.user_id, page=1)
+        assert result.message == ""
         assert result.success
         assert len(result.records) == 2
         assert len(result.records[0]["details"]) == 0
@@ -51,6 +53,7 @@ class TestTransactionService:
 
     def test_get_records_page_2(self):
         result = RecordService.get_all(self.user_id, page=2)
+        assert result.message == ""
         assert result.success
         assert len(result.records) == 0
 
