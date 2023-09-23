@@ -42,12 +42,12 @@ class BudgetService:
             return budget_id, message
 
     @staticmethod
-    def delete(budget_id: str) -> Tuple[bool, str]:
+    def delete(budget_id: str, user_id: str) -> Tuple[bool, str]:
         session = get_session()
         message = ""
 
         try:
-            session.query(Budget).filter(Budget.id == budget_id).delete()
+            session.query(Budget).filter(Budget.id == budget_id, Budget.user_id == user_id).delete()
             session.commit()
             result = True
 
@@ -61,7 +61,7 @@ class BudgetService:
             return result, message
 
     @staticmethod
-    def edit(budget_id: str, item_id: str, value: float) -> str:
+    def edit(budget_id: str, item_id: str, value: float, user_id) -> str:
         session = get_session()
         message = ""
 

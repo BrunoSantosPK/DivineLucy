@@ -13,6 +13,9 @@ class WalletController:
         try:
             # Verifica o JWT enviado
             body = json.loads(request.data)
+            if body["user_id"] != request.cookies.get("user_id"):
+                raise Exception("Você não tem permissão para criar carteira neste usuário")
+            
             wallet_id, message = WalletService.new(body["name"], body["user_id"])
             if message != "":
                 raise Exception(message)

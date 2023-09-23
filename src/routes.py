@@ -2,10 +2,13 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, request
 from src.utils.execution import Execution
+from src.validations.item import ItemValidator
 from src.controllers.page import PageController
 from src.controllers.user import UserController
 from src.validations.user import UserValidation
+from src.validations.budget import BudgetValidator
 from src.validations.record import RecordValidator
+from src.validations.wallet import WalletValidator
 from src.controllers.wallet import WalletController
 from src.controllers.budget import BudgetController
 from src.controllers.record import RecordController
@@ -70,48 +73,40 @@ def page_action():
 
 @app.route("/wallets", methods=["POST"])
 def create_wallet():
-    return Execution.run(UserController.auth, WalletController.new)
-    #result = WalletController.new()
-    #return Response(result.to_json(), result.get_status_code())
+    return Execution.run(UserController.auth, WalletValidator.post_new, WalletController.new)
 
 
 @app.route("/wallets/<user_id>", methods=["GET"])
 def get_wallets(user_id: str):
     return Execution.run(UserController.auth, WalletController.get_all)
-    #result = WalletController.get_all()
-    #return Response(result.to_json(), result.get_status_code())
 
 
 @app.route("/budget", methods=["POST", "PUT", "DELETE"])
 def manage_budget():
     if request.method == "POST":
-        return Execution.run(UserController.auth, BudgetController.new)
+        return Execution.run(UserController.auth, BudgetValidator.post_new, BudgetController.new)
     elif request.method == "PUT":
-        return Execution.run(UserController.auth, BudgetController.edit)
+        return Execution.run(UserController.auth, BudgetValidator.put_edit, BudgetController.edit)
     elif request.method == "DELETE":
-        return Execution.run(UserController.auth, BudgetController.delete)
+        return Execution.run(UserController.auth, BudgetValidator.delete_remove, BudgetController.delete)
 
 
 @app.route("/budget/<user_id>", methods=["GET"])
 def get_budgets(user_id: str):
     return Execution.run(UserController.auth, BudgetController.get_all)
-    #result = BudgetController.get_all()
-    #return Response(result.to_json(), result.get_status_code())
 
 
 @app.route("/item/<user_id>", methods=["GET"])
 def get_items(user_id: str):
     return Execution.run(UserController.auth, ClassificationItemController.get_all)
-    #result = ClassificationItemController.get_all()
-    #return Response(result.to_json(), result.get_status_code())
 
 
 @app.route("/item", methods=["POST", "DELETE"])
 def manage_items():
     if request.method == "POST":
-        return Execution.run(UserController.auth, ClassificationItemController.new)
+        return Execution.run(UserController.auth, ItemValidator.post_new, ClassificationItemController.new)
     elif request.method == "DELETE":
-        return Execution.run(UserController.auth, ClassificationItemController.delete)
+        return Execution.run(UserController.auth, ItemValidator.delete_remove, ClassificationItemController.delete)
 
 
 @app.route("/record", methods=["POST", "PUT", "DELETE"])
@@ -127,5 +122,3 @@ def get_records():
 @app.route("/record/<user_id>", methods=["GET"])
 def manage_records(user_id: str):
     return Execution.run(UserController.auth, RecordController.get_all)
-    #result = RecordController.get_all()
-    #return Response(result.to_json(), result.get_status_code())
