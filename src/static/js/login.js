@@ -1,11 +1,3 @@
-class LoginState {
-    constructor() {}
-
-    toRecover() {}
-
-    toSubscribe() {}
-}
-
 function show(box) {
     const elements = document.getElementsByClassName("login-box");
     for(let i = 0; i < elements.length; i++) {
@@ -45,16 +37,20 @@ async function subscribe() {
 
 async function login() {
     try {
+        // Verifica campos do input
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
         if(email == "" | password == "") {
             throw new Error("Preencha seu e-email e senha para entrar.");
         }
 
+        // Valida login no servidor
         const body = {email, password};
         const req = await fetch("/login", {method: "POST", body: JSON.stringify(body)});
         const res = await req.json();
-        console.log(res);
+
+        // Atualiza registro interno de login
+        localStorage.setItem("name", res.data.user_data.name);
         if(res.status_code != 200) {
             throw new Error(res.message);
         }

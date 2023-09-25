@@ -13,6 +13,17 @@
 
     <div class="header-user">
         <span class="material-symbols-outlined">account_circle</span>
-        <a class="header-user-text" href="/login">Bruno</a>
+        <a class="header-user-text" href="/login" id="menu-login">Entrar</a>
     </div>
 </div>
+
+<script>
+    (function execution() {
+        const name = localStorage.getItem("name");
+        if(name != null) {
+            const loginDiv = document.getElementById("menu-login");
+            loginDiv.textContent = name.split(" ")[0].trim();
+            loginDiv.href = "#";
+        }
+    })();
+</script>

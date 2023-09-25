@@ -56,7 +56,12 @@
     </body>
 
     <script>
-        renderWallets();
+        // Inicia estado da aplicação
+        const state = new HomeState();
+        state.render();
+
+        // Mapeia ações para o estado
+        const submitWallet = () => state.createWallet();
     </script>
 
 </html>

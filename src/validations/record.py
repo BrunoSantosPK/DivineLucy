@@ -17,9 +17,9 @@ class RecordValidator:
                 raise Exception(validate.get_message())
             
             body = json.loads(body)
-            required_fields = [("user_id", str), ("item_id", str), ("target_id", str), ("moviment_date", str), ("description", str), ("value", float)]
+            required_fields = [("user_id", str), ("item_id", str), ("target_id", str), ("moviment_date", str), ("description", str)]
             optional_fields = [("details", list, []), ("origin_id", str, None)]
-            list_fields = [("description", str), ("value", float)]
+            list_fields = [("description", str)]
             seq = [
                 (BaseValidator.validate_required_fields, (body, required_fields)),
                 (BaseValidator.validate_optional_field, (body, optional_fields)),

@@ -17,7 +17,7 @@ class BudgetValidator:
             
             # Verifica campos obrigatórios da requisição
             body = json.loads(body)
-            fields = [("user_id", str), ("year", int), ("month", int), ("item_id", str), ("value", float)]
+            fields = [("user_id", str), ("year", int), ("month", int), ("item_id", str)]
             validate = BaseValidator.validate_required_fields(body, fields)
             if validate.get_status_code() != 200:
                 raise Exception(validate.get_message())
@@ -40,7 +40,7 @@ class BudgetValidator:
             
             # Verifica campos obrigatórios da requisição
             body = json.loads(body)
-            fields = [("user_id", str), ("budget_id", str), ("item_id", str), ("value", float)]
+            fields = [("user_id", str), ("budget_id", str), ("item_id", str)]
             validate = BaseValidator.validate_required_fields(body, fields)
             if validate.get_status_code() != 200:
                 raise Exception(validate.get_message())

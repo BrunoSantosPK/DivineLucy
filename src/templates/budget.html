@@ -82,7 +82,19 @@
     </body>
 
     <script>
-        loadOptions();
+        // Inicializa o estado da página
+        const state = new BudgetState();
+        state.render();
+
+        // Mapeia as ações para o estado
+        const renderBudgets = () => state.renderBudgetList();
+        const editBudget = id => state.openModalUpdate(id);
+        const deleteBudget = id => state.deleteBudget(id);
+        const saveBudget = () => state.selectAction();
+        const newBudget = () => state.openModalNew();
+        const closeModal = () => state.closeModal();
+        const openModal = () => state.openModal();
+        const newItem = () => state.newItem();
     </script>
 
 </html>

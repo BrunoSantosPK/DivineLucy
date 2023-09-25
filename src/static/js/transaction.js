@@ -1,57 +1,14 @@
-class TransactionState {
+class RecordState {
     constructor() {
+        this.userID = null;
+        this.recordData = [];
+        this.walletData = [];
+        this.itemData = [];
+
         this.resTransactions = {
             status_code: 200,
             message: "",
-            data: [{
-                id: "transaction1",
-                date: "2023-07-25",
-                description: "Transferência para investimento",
-                value: 100000,
-                targetWallet: "lambari1",
-                originWallet: "lambari2",
-                classificationTag: "lambari3",
-                details: [{
-                    id: "lambari1",
-                    text: "Investimento A",
-                    value: 50000
-                }, {
-                    id: "lambari2",
-                    text: "Investimento B",
-                    value: 20000
-                }, {
-                    id: "lambari3",
-                    text: "Investimento C",
-                    value: 30000
-                }]
-            }, {
-                id: "transaction2",
-                date: "2023-07-24",
-                description: "Supermercado",
-                value: 132.69,
-                targetWallet: "lambari2",
-                originWallet: null,
-                classificationTag: "lambari1",
-                details: [{
-                    id: "lambari1",
-                    text: "Produto A",
-                    value: 100
-                }, {
-                    id: "lambari2",
-                    text: "Produto B",
-                    value: 32.69
-                }]
-            
-            }, {
-                id: "transaction3",
-                date: "2023-07-20",
-                description: "Compra colchão",
-                value: 599.90,
-                targetWallet: "lambari3",
-                originWallet: null,
-                classificationTag: "lambari4",
-                details: []
-            }]
+            data: []
         };
         this.resWallets = {
             status_code: 200,
@@ -86,21 +43,121 @@ class TransactionState {
         }
     }
 
-    getTransactions() {
-        return this.resTransactions.data;
-    }
-    
-    getWallets() {
-        return this.resWallets.data;
+    async render() {
+        // Recupera informação do usuário
+        const cookies = document.cookie.split(";");
+        for(let i = 0; i < cookies.length; i++) {
+            let [key, value] = cookies[i].split("=");
+            if(key.trim() == "user_id") {
+                this.userID = value;
+                break
+            }
+        }
+
+        // Atualiza dados
+        await this.renderListRecords();
+        await this.getWallets();
+        await this.getItems();
+
+        // Renderiza inputs
+        $("#transaction-target-wallet").html("");
+        $("#transaction-origin-wallet").html("");
+        this.walletData.forEach(item => {
+            $("#transaction-target-wallet").append(`<option value="${item.id}">${item.name}</option>`);
+            $("#transaction-origin-wallet").append(`<option value="${item.id}">${item.name}</option>`);
+        });
+
+        $("#transaction-tag").html("");
+        this.itemData.forEach(item => {
+            $("#transaction-tag").append(`
+                <option value="${item.id}">${item.name}</option>
+            `);
+        });
     }
 
-    getClassificationItems() {
-        return this.resItems.data;
+    async getWallets() {
+        try {
+            const req = await fetch(`/wallets/${this.userID}`, {method: "GET"});
+            const res = await req.json();
+            if(res.status_code != 200) {
+                throw new Error(res.message);
+            }
+            this.walletData = res.data;
+        } catch(error) {
+            console.log(error.message);
+        }
     }
 
-    getTransaction(id) {
-        return this.resTransactions.data.find(e => e.id == id);
+    async getItems() {
+        try {
+            const req = await fetch(`/item/${this.userID}`, {method: "GET"});
+            const res = await req.json();
+            if(res.status_code != 200) {
+                throw new Error(res.message);
+            }
+            this.itemData = res.data;
+        } catch(error) {
+            console.log(error.message);
+        }
     }
+
+    async renderListRecords() {
+        try {
+            const req = await fetch(`/record/${this.userID}`, {method: "GET"});
+            const res = await req.json();
+            if(res.status_code != 200) {
+                throw new Error(res.message);
+            }
+
+            this.recordData = res.data;
+        } catch(error) {
+            console.log(error.message);
+        }
+    }
+
+    async create() {
+        try {
+            // Recupera dados de acesso
+            const item_id = document.getElementById("transaction-tag").value;
+
+            // Envia requisição
+            const body = {user_id: this.userID, item_id, target_id, moviment_date, description, value, details, origin_id};
+
+            required_fields = [("user_id", str), ("item_id", str), ("target_id", str), ("moviment_date", str), ("description", str), ("value", float)]
+            optional_fields = [("details", list, []), ("origin_id", str, None)]
+
+            // Feedback de sucesso
+            this.closeModal();
+        } catch(error) {
+            alert(error.message);
+        }
+    }
+
+    selectAction() {
+        this.modalCreate();
+    }
+
+    modalCreate() {
+        document.getElementById("modal-title").textContent = "Nova Movimentação";
+        document.getElementById("transaction-date").value = null;
+        document.getElementById("transactin-description").value = "";
+        document.getElementById("transaction-target-wallet").value = null;
+        document.getElementById("transaction-origin-wallet").value = null;
+        document.getElementById("transaction-tag").value = null;
+        $("#transaction-details-area").html("");
+        this.openModal();
+    }
+
+    modalEdit() {}
+
+    openModal() {
+        $("#transaction-form").modal("show");
+    }
+
+    closeModal() {
+        $("#transaction-form").modal("hide");
+    }
+
 
     formatDate(date) {
         const split = date.split("-");
@@ -108,7 +165,7 @@ class TransactionState {
     }
 }
 
-const state = new TransactionState();
+
 
 function renderTransactions() {
     $("#transaction-area").html("");
@@ -133,29 +190,6 @@ function renderTransactions() {
                     </div>
                 </div>
             </div>
-        `);
-    });
-}
-
-function renderOptionsModal() {
-    $("#transaction-target-wallet").html("");
-    state.getWallets().forEach(item => {
-        $("#transaction-target-wallet").append(`
-            <option value="${item.id}">${item.name}</option>
-        `);
-    });
-
-    $("#transaction-origin-wallet").html("");
-    state.getWallets().forEach(item => {
-        $("#transaction-origin-wallet").append(`
-            <option value="${item.id}">${item.name}</option>
-        `);
-    });
-
-    $("#transaction-tag").html("");
-    state.getClassificationItems().forEach(item => {
-        $("#transaction-tag").append(`
-            <option value="${item.id}">${item.name}</option>
         `);
     });
 }
@@ -212,24 +246,4 @@ function deleteItemDetais(id) {
     const element = document.getElementById(id);
     const parent = document.getElementById("transaction-details-area");
     parent.removeChild(element);
-}
-
-function newTransaction() {
-    document.getElementById("modal-title").textContent = "Nova Movimentação";
-    document.getElementById("transaction-date").value = null;
-    document.getElementById("transactin-description").value = "";
-    document.getElementById("transaction-target-wallet").value = null;
-    document.getElementById("transaction-origin-wallet").value = null;
-    document.getElementById("transaction-tag").value = null;
-    $("#transaction-details-area").html("");
-    
-    openModal();
-}
-
-function openModal() {
-    $("#transaction-form").modal("show");
-}
-
-function closeModal() {
-    $("#transaction-form").modal("hide");
 }

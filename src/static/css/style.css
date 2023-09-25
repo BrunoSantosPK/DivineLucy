@@ -13,7 +13,7 @@ body { font-family: 'Urbanist', sans-serif; }
 .login-content .login-box { background-color: #b3dafb; padding: 10px 40px; border-radius: 20px; display: flex; flex-direction: column; min-width: 30vw; min-height: 40vh; justify-content: space-between; }
 .login-content .login-box h2 { font-size: 40px; text-align: center; }
 .login-content .login-box input { border-radius: 5px; border: 0px; padding: 5px 10px; font-size: 18px; }
-.login-content .login-box .login-button { background-color: #0f37bb; color: #fff; cursor: pointer; border-radius: 7px; display: flex; justify-content: center; align-items: center; padding: 5px 5px; font-size: 18px; transition: opacity 0.2s; }
+.login-content .login-box .login-button { background-color: #0e172f; color: #fff; cursor: pointer; border-radius: 7px; display: flex; justify-content: center; align-items: center; padding: 5px 5px; font-size: 18px; transition: opacity 0.2s; }
 .login-content .login-box .login-button:hover { opacity: 0.6; }
 .login-content .login-box .login-options { display: flex; flex-direction: row; justify-content: space-between; align-items: center; }
 .login-content .login-box .login-options span { cursor: pointer; font-size: 15px; }

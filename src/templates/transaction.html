@@ -16,7 +16,7 @@
 
                     <div class="transaction-title">
                         <h3>Movimentações</h3>
-                        <div class="button" onclick="newTransaction()">
+                        <div class="button" onclick="openModal()">
                             <span class="material-symbols-outlined">library_add</span>
                             <span class="label">Nova</span>
                         </div>
@@ -105,8 +105,16 @@
     </body>
 
     <script>
-        renderTransactions();
-        renderOptionsModal();
+        // Inicializa o estado da página
+        const state = new RecordState();
+        state.render();
+
+        // Mapeia as funções para o estado
+        const openModal = () => state.selectAction();
+        const closeModal = () => state.closeModal();
+
+        //renderTransactions();
+        //renderOptionsModal();
     </script>
 
 </html>

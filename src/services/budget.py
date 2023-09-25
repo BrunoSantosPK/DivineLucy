@@ -61,7 +61,7 @@ class BudgetService:
             return result, message
 
     @staticmethod
-    def edit(budget_id: str, item_id: str, value: float, user_id) -> str:
+    def edit(budget_id: str, item_id: str, value: float) -> str:
         session = get_session()
         message = ""
 
