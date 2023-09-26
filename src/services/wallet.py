@@ -61,10 +61,17 @@ class WalletService:
             result: List[Wallet] = session.query(Wallet).filter(Wallet.user_id == user_id).order_by(Wallet.create_at.desc()).all()
             for wallet in result:
                 q = session.query(func.sum(Record.value).label("result_value"))
-                r_income = q.filter(Record.user_id == user_id, Record.target_wallet == str(wallet.id), Record.value > 0).all()
-                r_outcome = q.filter(Record.user_id == user_id, Record.target_wallet == str(wallet.id), Record.value < 0).all()
-                income = sum([v.result_value for v in r_income if v.result_value is not None])
-                outcome = sum([v.result_value for v in r_outcome if v.result_value is not None])
+                target_income = q.filter(Record.user_id == user_id, Record.target_wallet == str(wallet.id), Record.value > 0).all()
+                origin_income = q.filter(Record.user_id == user_id, Record.origin_wallet == str(wallet.id), Record.value < 0).all()
+
+                target_outcome = q.filter(Record.user_id == user_id, Record.target_wallet == str(wallet.id), Record.value < 0).all()
+                origin_outcome = q.filter(Record.user_id == user_id, Record.origin_wallet == str(wallet.id), Record.value > 0).all()
+
+                income = sum([v.result_value for v in target_income if v.result_value is not None]) +\
+                    sum([-1 * v.result_value for v in origin_income if v.result_value is not None])
+                
+                outcome = sum([-1 * v.result_value for v in target_outcome if v.result_value is not None]) +\
+                    sum([v.result_value for v in origin_outcome if v.result_value is not None])
 
                 data.append({
                     "id": str(wallet.id),
@@ -72,7 +79,7 @@ class WalletService:
                     "create_at": wallet.create_at.isoformat(),
                     "total_income": income,
                     "total_outcome": outcome,
-                    "current_value": income + outcome
+                    "current_value": income - outcome
                 })
             
         except BaseException as e:

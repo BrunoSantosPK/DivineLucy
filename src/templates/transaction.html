@@ -47,7 +47,7 @@
 
                             <div class="modal-form-row">
                                 <label>Descrição da transação</label>
-                                <input id="transactin-description">
+                                <input id="transaction-description">
                             </div>
 
                             <div class="modal-form-row">
@@ -79,20 +79,9 @@
                                 <span class="material-symbols-outlined" onclick="addItemDetails()">add_circle</span>
                             </div>
 
-                            <div id="transaction-details-area">
-                                <div class="modal-form-details">
-                                    <input value="Produto A">
-                                    <input type="number" value="">
-                                    <span class="material-symbols-outlined" onclick="deleteItemDetais('lambari')">delete</span>
-                                </div>
-                                <div class="modal-form-details">
-                                    <input value="Produto B">
-                                    <input type="number" value=>
-                                    <span class="material-symbols-outlined" onclick="deleteItemDetais('lambari')">delete</span>
-                                </div>
-                            </div>
+                            <div id="transaction-details-area"></div>
 
-                            <div class="modal-form-button">
+                            <div class="modal-form-button" onclick="saveRecord()">
                                 <span>Salvar</span>
                             </div>
 
@@ -110,11 +99,14 @@
         state.render();
 
         // Mapeia as funções para o estado
-        const openModal = () => state.selectAction();
+        const openModal = () => state.openModalCreate();
         const closeModal = () => state.closeModal();
-
-        //renderTransactions();
-        //renderOptionsModal();
+        const saveRecord = () => state.save();
+        const addItemDetails = () => state.createRowDetails();
+        const deleteItemDetais = id => state.removeRowDetails(id);
+        const editTransaction = id => state.openModalEdit(id);
+        const showTransferWallet = () => state.showTransferWallet();
+        const deleteTransaction = id => state.delete(id);
     </script>
 
 </html>
